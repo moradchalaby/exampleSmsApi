@@ -16,5 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
+Route::get('/swagger', function () {
+    return view('vendor.l5-swagger.index');
+});
 
-require __DIR__.'/auth.php';
+
