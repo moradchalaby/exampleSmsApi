@@ -1,6 +1,8 @@
 <?php
 
 
+use App\Http\Controllers\Sms\SmsReportController;
+use App\Http\Controllers\Sms\SmsSendController;
 use Illuminate\Http\Request;
 
 
@@ -24,9 +26,11 @@ Route::prefix(env('API_VERSION'))->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix(env('API_VERSION'))->middleware('auth:api')->group(function () {
+    Route::get('/sms-report', SmsReportController::class . '@reportSms');
+    Route::get('/sms-report/{id}', SmsReportController::class . '@reportSmsDetail');
+    Route::post('/send-sms', SmsSendController::class . '@sendSms');
+});
 
-
-
-Route::get('/v1/send-sms', \App\Http\Controllers\Sms\SmsSendController::class . '@sendSms')->middleware('auth:api');
 
 require __DIR__.'/auth.php';

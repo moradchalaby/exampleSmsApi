@@ -30,20 +30,8 @@ use Illuminate\Routing\Controller as BaseController;
  *     description="Operations about auth",
  * )
  * @OA\Tag(
- *     name="user",
- *     description="Operations about user",
- *     @OA\ExternalDocumentation(
- *         description="Find out more about store",
- *         url="http://swagger.io"
- *     )
- * )
- * @OA\Tag(
  *     name="sms",
  *     description="Operations about report",
- *     @OA\ExternalDocumentation(
- *         description="Find out more about store",
- *         url="http://swagger.io"
- *     )
  * )
  * @OA\Server(
  *     description="ExampleSms API v1.0.0 server",

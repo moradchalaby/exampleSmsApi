@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SmsReportController extends Controller
 {
-    //
+
     /**
      * @OA\Get(
      *     path="/sms-report",
@@ -60,7 +60,7 @@ class SmsReportController extends Controller
      *     @OA\Schema(
      *     type="string",
      *     format="string",
-     *     enum={"user_id","phone","send_time"},
+     *     enum={"status","phone","send_time"},
      *     ),
      *     ),
      *     @OA\Parameter(
@@ -164,63 +164,11 @@ class SmsReportController extends Controller
      *     ),
      *     ),
      *     ),
-     *     @OA\Response(
-     *     response=422,
-     *     description="Unprocessable Entity",
-     *     @OA\JsonContent(
-     *     oneOf={
-     *     @OA\Schema(type="boolean")
-     *    },
-     *     @OA\Examples(example="result", value={
-     *     'success' => false,
-     *     'message' => 'The given data was invalid.',
-     *     'errors' => {
-     *     'start_date' => {
-     *     'The start date must be a valid date.'
-     *     },
-     *     'end_date' => {
-     *     'The end date must be a valid date.',
-     *     'The end date must be later than or the same as the start date.'
-     *     },
-     *     'user_id' => {
-     *     'User ID must be an integer.'
-     *     },
-     *     'status' => {
-     *     'The status must be a text.',
-     *     'Invalid status value. Only pending, delivered, failed values are accepted.'
-     *     },
      *
-     *     'sort_by' => {
-     *     'The sort field must be text.',
-     *
-     *     'Invalid sort field value. Only user_id, phone, send_time values are accepted.'
-     *     },
-     *     'sort_direction' => {
-     *     'Sorting direction must be a text.',
-     *     'Invalid sort direction value. Only asc, desc values are accepted.'
-     *     },
-     *     'page' => {
-     *     'The page number must be an integer.',
-     *     'The page number must be at least 1.'
-     *     },
-     *     'per_page' => {
-     *     'The number of items per page must be an integer.',
-     *     'The number of items per page must be at least 1.',
-     *     'The maximum number of items per page should be 100.'
-     *     },
-     *     },
-     *     422,
-     *     }, summary="An result object."),
-     *     }, summary="An result object."),
-     *     ),
-     *     security={
-     *     {"bearerAuth": {}}
-     *     }
-     *     )
      * )
      */
 
-    public function smsReport(Request $request)
+    public function reportSms(Request $request)
     {
         $request->validate([
             'start_date' => 'date',
@@ -236,7 +184,7 @@ class SmsReportController extends Controller
         $end_date = parse_date($request->input('end_date'));
 
         $query = Sms::query();
-        $query->where('user_id', auth()->user()->id);
+        $query->where('user_id', Auth::id());
         $query->when($request->filled('start_date'), fn ($q) => $q->whereDate('send_time', '>=', $start_date));
         $query->when($request->filled('end_date'), fn ($q) => $q->whereDate('send_time', '<=', $end_date));
         $query->when($request->filled('status'), fn ($q) => $q->where('status', $request->input('status')));
@@ -352,26 +300,7 @@ if($smsList->count() > 0){
      * ),
      * ),
      * ),
-     * @OA\Response(
-     * response=422,
-     * description="Unprocessable Entity",
-     * @OA\JsonContent(
-     * oneOf={
-     * @OA\Schema(type="boolean")
-     * },
-     * @OA\Examples(example="result", value={
-     * 'success' => false,
-     * 'message' => 'The given data was invalid.',
-     * 'errors' => {
-     * 'id' => {
-     * 'SMS ID is required.',
-     * 'SMS ID must be an integer.'
-     * },
-     * },
-     * 422,
-     * }, summary="An result object."),
-     * ),
-     * ),
+
      * security={
      * {"bearerAuth": {}}
      * }
@@ -379,7 +308,7 @@ if($smsList->count() > 0){
      * )
      *
      */
-    public function smsReportDetail(Request $request)
+    public function reportSmsDetail(Request $request)
     {
 
        $request->validate([
@@ -389,7 +318,7 @@ if($smsList->count() > 0){
             'id.integer' => 'SMS ID must be an integer.',
         ]);
 
-        $sms = Sms::where('user_id',Auth::user()->id)->find($request->id);
+        $sms = Sms::where('user_id',Auth::id())->find($request->id);
         $sms->select(
             'phone',
             'message',

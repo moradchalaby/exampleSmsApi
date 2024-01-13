@@ -16,15 +16,25 @@ class SendSms implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public $phone;
+    public $message;
+    public $origin;
+    public $sms_id;
+
+    public function __construct($phone, $message,  $origin, $sms_id)
     {
         //
+
+        $this->phone = $phone;
+        $this->message = $message;
+        $this->origin = $origin;
+        $this->sms_id = $sms_id;
     }
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-      send_sms(request('phone'), request('message'), request('title'));
+      send_sms($this->phone, $this->message, $this->origin, $this->sms_id);
     }
 }
