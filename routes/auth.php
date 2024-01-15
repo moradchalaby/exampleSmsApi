@@ -8,12 +8,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-function major()
-{
-    dd(app()->version());
-return explode('.', app()->version())[0];
 
-}
 Route::group(['prefix' => env('API_VERSION'),'middleware'=>['api']], function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])
         ->middleware('guest')
