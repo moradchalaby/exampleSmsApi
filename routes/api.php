@@ -22,9 +22,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix(env('API_VERSION'))->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::prefix(env('API_VERSION'))->middleware('auth:api')->group(function () {
     Route::get('/sms-report', SmsReportController::class . '@reportSms');
